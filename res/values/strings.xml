@@ -2,6 +2,10 @@
 <resources>
 
     <string name="app_name">MusicPlayer</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="idle">Idle</string>
+    <string name="playing">Playing</string>
+    <string name="paused">Paused</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
 
 </resources>

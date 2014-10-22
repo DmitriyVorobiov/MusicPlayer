@@ -7,7 +7,6 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Binder;
 import android.os.IBinder;
-import android.support.v4.content.LocalBroadcastManager;
 
 public class MusicPlayerService extends Service implements OnCompletionListener {
 
@@ -29,9 +28,10 @@ public class MusicPlayerService extends Service implements OnCompletionListener 
 		return binder;
 	}
 
+	@Override
 	public void onCompletion(MediaPlayer arg0) {
 		playingStatus = STATUS_IDLE;
-		sendResult();
+		stopSelf();
 		releaseMediaPlayer();
 		stopForeground(true);
 	}
@@ -58,15 +58,12 @@ public class MusicPlayerService extends Service implements OnCompletionListener 
 		}
 	}
 
-	void onRecieveCommand() {
+	protected void onRecieveCommand() {
 		switch (playingStatus) {
 		case STATUS_IDLE:
 			releaseMediaPlayer();
-			// mediaPlayer = new MediaPlayer();
 			mediaPlayer = MediaPlayer.create(this, R.raw.audio);
-			// mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-			// mediaPlayer.setOnCompletionListener(this);
-			// mediaPlayer.prepare();
+			mediaPlayer.setOnCompletionListener(this);
 			mediaPlayer.start();
 			playingStatus = STATUS_PLAYING;
 
@@ -81,7 +78,6 @@ public class MusicPlayerService extends Service implements OnCompletionListener 
 			playingStatus = STATUS_PLAYING;
 			break;
 		}
-		sendResult();
 		if (playingStatus == STATUS_PLAYING) {
 			startForeground(1, new Notification());
 		} else {
@@ -89,12 +85,7 @@ public class MusicPlayerService extends Service implements OnCompletionListener 
 		}
 	}
 
-	private void sendResult() {
-		Intent intent = new Intent(MainActivity.ACTION_PLAYER);
-		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-	}
-
-	int getPlayingStatus() {
+	protected int getPlayingStatus() {
 		return playingStatus;
 	}
 }
