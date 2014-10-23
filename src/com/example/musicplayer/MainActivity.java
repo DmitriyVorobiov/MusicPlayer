@@ -1,14 +1,21 @@
 package com.example.musicplayer;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 public class MainActivity extends Activity implements OnClickListener {
@@ -16,9 +23,12 @@ public class MainActivity extends Activity implements OnClickListener {
 	protected static final String ACTION_PLAYER = "player";
 	private ServiceConnection serviceConnection;
 	private boolean connectedWithService;
+	private BroadcastReceiver reciever;
+	private AudioManager audioManager;
 	private MusicPlayerService musicService;
 	private Button button;
 	private TextView statusView;
+	private SeekBar volumeBar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -28,10 +38,55 @@ public class MainActivity extends Activity implements OnClickListener {
 		button = (Button) findViewById(R.id.serviceButton);
 		button.setOnClickListener(this);
 		statusView = (TextView) findViewById(R.id.statusView);
-
+		volumeBar = (SeekBar)findViewById(R.id.volumeBar);
+		audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+		
+		initVolumeBar();
+		 
 		startService(new Intent(this, MusicPlayerService.class));
 
 		initServiceConnection();
+
+		initReciever();
+
+	}
+
+	private void initVolumeBar() {
+		volumeBar.setMax(audioManager
+                .getStreamMaxVolume(AudioManager.STREAM_MUSIC));
+        volumeBar.setProgress(audioManager
+                .getStreamVolume(AudioManager.STREAM_MUSIC)); 
+        volumeBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+			
+			@Override
+			public void onStopTrackingTouch(SeekBar arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onStartTrackingTouch(SeekBar arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
+				audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
+                        volumeBar.getProgress(), 0);
+			}
+		});
+	}
+
+	private void initReciever() {
+		reciever = new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				updateUI();
+			}
+		};
+		LocalBroadcastManager.getInstance(this).registerReceiver(reciever,
+				new IntentFilter(ACTION_PLAYER));
 
 	}
 
@@ -69,7 +124,6 @@ public class MainActivity extends Activity implements OnClickListener {
 			updateUIPaused();
 			break;
 		}
-
 	}
 
 	private void initServiceConnection() {
@@ -78,7 +132,6 @@ public class MainActivity extends Activity implements OnClickListener {
 			public void onServiceDisconnected(ComponentName name) {
 				connectedWithService = false;
 				musicService = null;
-				updateUI();
 			}
 
 			@Override
@@ -113,8 +166,13 @@ public class MainActivity extends Activity implements OnClickListener {
 			initServiceConnection();
 		if (connectedWithService) {
 			musicService.onRecieveCommand();
-			updateUI();
 		}
 	}
 
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		if (!isChangingConfigurations()) 
+		musicService.stop();
+	}
 }

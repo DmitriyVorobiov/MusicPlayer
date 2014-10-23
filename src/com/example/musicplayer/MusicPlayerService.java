@@ -7,6 +7,8 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Binder;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 
 public class MusicPlayerService extends Service implements OnCompletionListener {
 
@@ -31,9 +33,10 @@ public class MusicPlayerService extends Service implements OnCompletionListener 
 	@Override
 	public void onCompletion(MediaPlayer arg0) {
 		playingStatus = STATUS_IDLE;
-		stopSelf();
+		sendMessage();
 		releaseMediaPlayer();
 		stopForeground(true);
+
 	}
 
 	@Override
@@ -78,14 +81,35 @@ public class MusicPlayerService extends Service implements OnCompletionListener 
 			playingStatus = STATUS_PLAYING;
 			break;
 		}
+		sendMessage();
 		if (playingStatus == STATUS_PLAYING) {
-			startForeground(1, new Notification());
+			startForeground(1, getServiceNotification());
 		} else {
 			stopForeground(true);
 		}
 	}
 
+	private Notification getServiceNotification() {
+		NotificationCompat.Builder notif = new NotificationCompat.Builder(this)
+				.setSmallIcon(R.drawable.ic_launcher).setContentTitle(
+						"MusicPlayer");
+
+		return notif.build();
+	}
+
+	private void sendMessage() {
+		LocalBroadcastManager.getInstance(this).sendBroadcast(
+				new Intent(MainActivity.ACTION_PLAYER));
+	}
+
 	protected int getPlayingStatus() {
 		return playingStatus;
 	}
+
+	protected void stop() {
+		stopSelf();
+		releaseMediaPlayer();
+		mediaPlayer = null;
+	}
+
 }
