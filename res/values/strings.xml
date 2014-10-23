@@ -7,5 +7,7 @@
     <string name="paused">Paused</string>
     <string name="play">Play</string>
     <string name="pause">Pause</string>
+    <string name="volume">Volume</string>
+    <string name="player">MusicPlayer</string>
 
 </resources>

@@ -38,11 +38,11 @@ public class MainActivity extends Activity implements OnClickListener {
 		button = (Button) findViewById(R.id.serviceButton);
 		button.setOnClickListener(this);
 		statusView = (TextView) findViewById(R.id.statusView);
-		volumeBar = (SeekBar)findViewById(R.id.volumeBar);
-		audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-		
+		volumeBar = (SeekBar) findViewById(R.id.volumeBar);
+		audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+
 		initVolumeBar();
-		 
+
 		startService(new Intent(this, MusicPlayerService.class));
 
 		initServiceConnection();
@@ -53,27 +53,27 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	private void initVolumeBar() {
 		volumeBar.setMax(audioManager
-                .getStreamMaxVolume(AudioManager.STREAM_MUSIC));
-        volumeBar.setProgress(audioManager
-                .getStreamVolume(AudioManager.STREAM_MUSIC)); 
-        volumeBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-			
+				.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
+		volumeBar.setProgress(audioManager
+				.getStreamVolume(AudioManager.STREAM_MUSIC));
+		volumeBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+
 			@Override
 			public void onStopTrackingTouch(SeekBar arg0) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void onStartTrackingTouch(SeekBar arg0) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
 				audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
-                        volumeBar.getProgress(), 0);
+						volumeBar.getProgress(), 0);
 			}
 		});
 	}
@@ -162,8 +162,6 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		if (!connectedWithService)
-			initServiceConnection();
 		if (connectedWithService) {
 			musicService.onRecieveCommand();
 		}
@@ -172,7 +170,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		if (!isChangingConfigurations()) 
-		musicService.stop();
+		if (!isChangingConfigurations())
+			musicService.stop();
 	}
 }

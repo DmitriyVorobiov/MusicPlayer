@@ -3,34 +3,42 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="${relativePackage}.${activityClass}" >
+	
+	    <Button
+	        android:id="@+id/serviceButton"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentBottom="true"
+	        android:layout_centerHorizontal="true"
+	        android:layout_marginLeft="10dp"
+	        android:layout_marginRight="10dp"
+	        android:layout_marginBottom="10dp"
+	        android:text="@string/play" />
 
-    <TextView
-        android:id="@+id/statusView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="101dp"
-        android:text="@string/idle"
-        android:textSize="30sp" />
+	    <TextView
+	        android:id="@+id/statusView"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentTop="true"
+	        android:layout_centerHorizontal="true"
+	        android:layout_marginTop="30dp"
+	        android:text="@string/idle"
+	        android:textSize="30sp" />
 
-    <Button
-        android:id="@+id/serviceButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
-        android:text="@string/play" />
+	    <TextView
+	        android:id="@+id/volumeView"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignLeft="@+id/serviceButton"
+	        android:layout_below="@+id/statusView"
+	        android:text="@string/volume"
+	        android:textSize="20sp" />
 
-    <SeekBar
-        android:id="@+id/volumeBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/statusView"
-        android:layout_marginTop="114dp" />
+	    <SeekBar
+	        android:id="@+id/volumeBar"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentLeft="true"
+	        android:layout_below="@+id/volumeView" />
 
 </RelativeLayout>

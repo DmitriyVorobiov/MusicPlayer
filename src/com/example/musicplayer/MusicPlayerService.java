@@ -1,6 +1,7 @@
 package com.example.musicplayer;
 
 import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -91,8 +92,14 @@ public class MusicPlayerService extends Service implements OnCompletionListener 
 
 	private Notification getServiceNotification() {
 		NotificationCompat.Builder notif = new NotificationCompat.Builder(this)
-				.setSmallIcon(R.drawable.ic_launcher).setContentTitle(
-						"MusicPlayer");
+				.setSmallIcon(R.drawable.ic_launcher)
+				.setContentTitle("MusicPlayer")
+				.setOngoing(true)
+				.setContentIntent(
+						PendingIntent.getActivity(this, 0, new Intent(this,
+								MainActivity.class)
+								.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP
+										| Intent.FLAG_ACTIVITY_CLEAR_TOP), 0));
 
 		return notif.build();
 	}
