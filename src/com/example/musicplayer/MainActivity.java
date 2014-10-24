@@ -22,7 +22,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	protected static final String ACTION_PLAYER = "player";
 	private ServiceConnection serviceConnection;
-	private boolean connectedWithService;
+	private boolean connected;
 	private BroadcastReceiver reciever;
 	private AudioManager audioManager;
 	private MusicPlayerService musicService;
@@ -100,15 +100,15 @@ public class MainActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onStop() {
 		super.onStop();
-		if (!connectedWithService)
+		if (!connected)
 			return;
 		unbindService(serviceConnection);
-		connectedWithService = false;
+		connected = false;
 	}
 
 	protected void updateUI() {
 		int currentStatus = 0;
-		if (connectedWithService) {
+		if (connected) {
 			currentStatus = musicService.getPlayingStatus();
 		} else {
 			currentStatus = MusicPlayerService.STATUS_IDLE;
@@ -130,7 +130,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		serviceConnection = new ServiceConnection() {
 			@Override
 			public void onServiceDisconnected(ComponentName name) {
-				connectedWithService = false;
+				connected = false;
 				musicService = null;
 			}
 
@@ -139,7 +139,7 @@ public class MainActivity extends Activity implements OnClickListener {
 					IBinder musicBinder) {
 				musicService = ((MusicPlayerService.MusicBinder) musicBinder)
 						.getMusicPlayerService();
-				connectedWithService = true;
+				connected = true;
 				updateUI();
 			}
 		};
@@ -162,7 +162,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		if (connectedWithService) {
+		if (connected) {
 			musicService.onRecieveCommand();
 		}
 	}

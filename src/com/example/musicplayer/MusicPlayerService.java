@@ -93,7 +93,7 @@ public class MusicPlayerService extends Service implements OnCompletionListener 
 	private Notification getServiceNotification() {
 		NotificationCompat.Builder notif = new NotificationCompat.Builder(this)
 				.setSmallIcon(R.drawable.ic_launcher)
-				.setContentTitle("MusicPlayer")
+				.setContentTitle(getString(R.string.player))
 				.setOngoing(true)
 				.setContentIntent(
 						PendingIntent.getActivity(this, 0, new Intent(this,
